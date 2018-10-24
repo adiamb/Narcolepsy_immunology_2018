@@ -1,3 +1,9 @@
+"""
+scripts to parse SSEQ TCR data from HIMC using Python.
+@author: Aditya Ambati, Mignot Lab, Stanford University
+"""
+
+
 class sseq_calls(object):
 	"""A sseq seqeuncing object:
 
