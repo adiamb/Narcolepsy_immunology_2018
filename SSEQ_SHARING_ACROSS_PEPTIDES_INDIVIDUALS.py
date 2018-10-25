@@ -2,30 +2,40 @@
 scripts to parse SSEQ TCR data from HIMC using Python.
 @author: Aditya Ambati, Mignot Lab, Stanford University
 """
+import sys
+import argparse
+import datetime
+import os
 
-
+parser = argparse.ArgumentParser(description='A class method to process sseq libraries to pick public cdr3s')
+parser.add_argument('-file', required=True, help='Full path to sseq library files')
+args=parser.parse_args()
+filein = args.file
+####### define the sseq as an object ########
 class sseq_calls(object):
 	"""A sseq seqeuncing object:
 
 	Attributes:
 		name: A string representing the sseq library.
-		filein: location of the associated sseq library.
+		filein: location of the associated sseq library in csv format.
 	"""
+	instance_count =0
 
 	def __init__(self, name, filein):
 		"""intitate the sseq object class."""
 		self.name = name
 		self.filein = filein
+		self.instance_count += 1
 
 				
 	def get_attr(self):
-		print('Name :- {} \n Source file :- {}'.format(self.name, self.filein))
+		print(' NAME :- {} \n SOURCE FILE :- {} \n INSTANCE COUNT :- {}'.format(self.name, self.filein, self.instance_count))
 
 	
 	def read_data(self):
 		data=[]
 		with open(self.filein) as sseq_in:
-			print('Reading data from {} '.format(self.filein))
+			print('READING DATA FROM FILE  {} '.format(self.filein))
 			for line in sseq_in:
 				data.append(line.strip('\n'))
 				#if parse_line[9] or parse_line[15]:
@@ -79,7 +89,7 @@ class sseq_calls(object):
 		for k, v in fam_dic.items():
 			for k2, v2 in v.items():
 				if len(v) > 1:
-					print k, k2, v2
+					#print k, k2, v2
 					if v2 > 1:
 						norm_cdrs[k] = k2
 					else: ##### incase same count assig the first instance of the fam to main call
@@ -105,7 +115,7 @@ class sseq_calls(object):
 				parse_line=line.strip('\n').split(',')
 			if parse_line[1] and parse_line[2] and parse_line[3] and parse_line[0]:
 				make_key = ','.join([parse_line[1], parse_line[2].strip(), parse_line[3]])
-				print make_key
+				#print make_key
 
 			if 'DbID' not in make_key:
 				VB=parse_line[6]
@@ -137,7 +147,7 @@ class sseq_calls(object):
 					# cdr2 = VA+'_'+cdr3a+'_'+JA+':'+VB+'_'+cdr3b
 					cdr1 = cdr3a_alt+':'+cdr3b
 					cdr2 =cdr3a+':'+cdr3b
-					print "FOUND alt alphas ALPHA {}, alt ALPHA {} BETAS {}".format(cdr3a, cdr3a_alt, cdr3b)
+					#print "FOUND alt alphas ALPHA {}, alt ALPHA {} BETAS {}".format(cdr3a, cdr3a_alt, cdr3b)
 					for cdr in [cdr1, cdr2]:
 						comb_call = 'both'
 						self.make_CDRDIC(indic =CDR3_DIC, makekey=make_key, cdr=cdr)
@@ -229,7 +239,7 @@ class sseq_calls(object):
 		for k, v in out_cdr.items():
 			for k2, v2 in v.items():
 				if len(v2) >= depth:
-					print k, k2
+					#print k, k2
 					if k not in keep_list:
 						keep_list.append(k)
 		return keep_list
@@ -237,8 +247,10 @@ class sseq_calls(object):
 
 	def write_outfile(self, cdr3dic, cdr3keep, normfamdicalpha, normfamdicbeta, chain, CDR3_totals):
 		""" this function writes out the sharing results """
-		import datetime
+		
 		dttime=datetime.datetime.now().strftime ("%Y%m%d")
+
+
 		header=',DBID,PEPTIDE,DX,COUNTS,Totalcalls'+'\n'
 		if chain == 'CDR3AB':
 			outfile = open('CDR3AB_SHARING_SSEQ_'+dttime+'.csv', 'w')
@@ -296,6 +308,10 @@ class sseq_calls(object):
 
 
 
+if __name__ == '__main__':
+	seq_object = sseq_calls(name='SSEQ', filein=filein)
+	seq_object.conclude_process(depth_across_peptide=3, depth_per_individual=1)
+
 
 
 
@@ -304,6 +320,6 @@ class sseq_calls(object):
 
 	
 
-a = sseq_calls(name='SSEQ_GUO', filein='COMBINED_SSEQ_GUO_October12_2018_edit_fornorm_lowthreshold.csv')
-a.process_data_CDR3()
-a.conclude_process(depth_across_peptide=3, depth_per_individual=1)
+# a = sseq_calls(name='SSEQ_GUO', filein='COMBINED_SSEQ_GUO_October12_2018_edit_fornorm_lowthreshold.csv')
+# a.process_data_CDR3()
+# a.conclude_process(depth_across_peptide=3, depth_per_individual=1)
