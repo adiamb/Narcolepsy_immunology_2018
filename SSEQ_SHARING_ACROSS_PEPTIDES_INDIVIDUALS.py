@@ -1,6 +1,6 @@
 """
 scripts to parse SSEQ TCR data from HIMC using Python.
-@author: Aditya Ambati, Mignot Lab, Stanford University
+@author: Aditya Ambati ambati@stanford.edu, Mignot Lab, Stanford University
 """
 import sys
 import argparse
