@@ -8,7 +8,7 @@ import datetime
 import os
 
 parser = argparse.ArgumentParser(description='A class method to process sseq libraries to pick public cdr3s')
-parser.add_argument('-file', required=True, help='Full path to sseq library files')
+parser.add_argument('-file', required=True, help='Full path to sseq library file')
 args=parser.parse_args()
 filein = args.file
 ####### define the sseq as an object ########
